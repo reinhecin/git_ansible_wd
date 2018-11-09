@@ -5,9 +5,9 @@
   gather_facts: no
 
   vars:
-     service_account_email: prueba1-ansi@ansi-rh-tst1.iam.gserviceaccount.com
-     credentials_file: ansi-rh-tst1-4e88c0dd5470.json
-     project_id: ansi-rh-tst1
+     service_account_email: [Google Cloud service_account_email]
+     credentials_file: [Google json credentials_file]
+     project_id: [Google project_id]
      machine_type: n1-standard-1
      image: centos-7
 
@@ -20,4 +20,3 @@
         service_account_email: "{{ service_account_email }}"
         credentials_file: "{{ credentials_file }}"
         project_id: "{{ project_id }}"
-

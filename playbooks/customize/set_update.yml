@@ -8,7 +8,7 @@
         include_vars: vars/vars.yml
 
       - name: Install the consumer RPM from the Satellite Server
-        shell: "rpm -Uvh http://srv5.tsmx.lab/pub/katello-ca-consumer-latest.noarch.rpm"
+        shell: "rpm -Uvh [Katello RPM or URL]"
 
       - name: Register machine
         redhat_subscription:
@@ -16,7 +16,7 @@
           username: admin
           password: "{{ password }}"
           pool: "Employee SKU"
-     
+
       - name: Disable all repos
         shell: "subscription-manager repos --disable=*"
 

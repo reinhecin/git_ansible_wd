@@ -1,0 +1,64 @@
+---
+- name: Create gce webserver instance
+  hosts: localhost
+  connection: local
+  gather_facts: True
+
+  vars:
+    service_account_email: <your gce service account email>
+    credentials_file: <your credentials file>
+    project_id: <proj id>
+    instance_names: web1,web2
+    machine_type: n1-standard-1
+    image: centos-7
+
+   tasks:
+   - name: Create firewall rule to allow http traffic
+     gce_net:
+      name: default
+      fwname:
+
+
+
+
+
+- name: Create an Instance based on image {{ image }}
+    gce:
+      instance_names: "{{ instance_names }}"
+      machine_type: "{{ machine_type }}"
+      image: "{{ image }}"
+      state: present
+      preemtible: true
+      tags: http-server,https-server
+      service_account_email: "{{ service_account_email }}"
+      credentials_file: "{{ credentials_file }}"
+      project_id: "{{ project_id }}"
+      metadata: '{"sshKeys":"<your gce user: Your id_rsa_public key>"}'
+    register: gce
+
+- name: Save host data within a Group
+  add_host:
+    hostname: "{{ item.public_ip }}"
+    groupname: gce_instances_temp
+  with_items: "{{ gce.instance_data }}'
+
+  - name: Wait for SSH to come up
+    wait_for: host={{ item.public_ip }} port=22 delay=10 timeout=60
+    with_items: "{{ gce.instance_data }}"
+  
+  - name: Setting ip as instance fact
+    set_fact: host={{ item.public_ip }}
+    with_items: "{{ gce.instance_data }}"
+
+- name: Configure instance post-creation
+  hosts: gce_instances_temp
+  gather_facts: True
+  remote_user: dark_axl
+  become: yes
+  become_method: sudo
+
+  roles:
+
+    - myapache
+ 
+
